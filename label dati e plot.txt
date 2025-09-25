@@ -1,0 +1,157 @@
+21A == LNO(100nm)/LAO
+19A == CeO2(70)/LNO/LAO
+28B == YBCO(100)/CeO2(25)/LNO/LAO
+24A == YBCO(30)/CeO2(55)/LNO/LAO
+28A == YBCO(60)/CeO2(5)/LNO/LAO
+27A == YBCO(60)/CeO2(40)/LNO/LAO
+26A == YBCO(60)/CeO2(120)/LNO/LAO
+25A == CeO2(25)/YBCO(60)/CeO2(25)/LNO/LAO
+
+#----------------------------------------------------------------
+#fig 4.8a == Y100C25 == 28B
+
+plt.figure(figsize=(10,7))
+# print("ag0")
+y1, yerr1 = normalize(tscan_28b_ag0[1], tscan_28b_ag0[2])
+plt.errorbar(tscan_28b_ag0[0], y1, yerr=yerr1,color='darkgreen', label="Ag0")#-Y100C25, 10/04") # label='27a YBCO60 Ag0 01/04')
+
+print("ag5")
+y1, yerr1 = normalize(tscan_28b_ag5[1], tscan_28b_ag5[2])
+plt.errorbar(tscan_28b_ag5[0], y1, yerr=yerr1,color='blue', label="Ag5")#-Y60C40, 16/04") # label='27a YBCO60 Ag0 01/04')
+
+print("ag10")
+y1, yerr1 = normalize(tscan_28b_ag10[1], tscan_28b_ag10[2])
+plt.errorbar(tscan_28b_ag10[0][1:], y1[1:], yerr=yerr1[1:],color='red', label="Ag10")#-Y60C40, 16/04")
+
+print("ag15")
+y1, yerr1 = normalize(tscan_28b_ag15_check[1], tscan_28b_ag15_check[2])
+plt.errorbar(tscan_28b_ag15_check[0][1:], y1[1:], yerr=yerr1[1:],color='black', label="Ag15")#-Y60C40, 16/04")
+
+# plt.title("Y100C25", fontsize=19)
+plt.xlabel("Temperature (K)",fontsize=19)
+plt.ylabel("Signal (normalized) at low field", fontsize=19)#plt.gca().set_yticklabels([])
+plt.axvline(66, linestyle='--', color='grey')
+plt.legend(fontsize=17, loc="upper left")
+plt.tick_params(axis="both", which="major", labelsize=15)
+plt.savefig(save_thesis+"28b ag all")
+
+plt.show()
+
+
+#---------------------------------------------------------------------
+#fig 4.9a == Y60C5 == 28A
+
+
+
+plt.figure(figsize=(10,7))
+print("ag0")
+y1, yerr1 = normalize(tscan_28a_ag0[1][1:], tscan_28a_ag0[2][1:])
+plt.errorbar(tscan_28a_ag0[0][1:], y1, yerr=yerr1,color='darkgreen', label="Ag0")#-Y60C5, 09/04") # label='27a YBCO60 Ag0 01/04')
+
+print("ag5")
+y1, yerr1 = normalize(tscan_28a_ag5[1][1:], tscan_28a_ag5[2][1:])
+plt.errorbar(tscan_28a_ag5[0][1:], y1, yerr=yerr1,color='blue', label="Ag5")#-Y60C5")#, 23/04") # label='27a YBCO60 Ag0 01/04')
+
+print("ag10")
+y1, yerr1 = normalize(tscan_28a_ag10[1], tscan_28a_ag10[2])
+plt.errorbar(tscan_28a_ag10[0], y1, yerr=yerr1,color='red', label="Ag10")#-Y60C5, 24/04")
+
+print("ag15")
+# y1, yerr1 = normalize(tscan_28a_ag15[1], tscan_28a_ag15[2])
+# plt.errorbar(tscan_28a_ag15[0], y1, yerr=yerr1,color='black', label = "10/04")
+
+print("ag15")
+y1, yerr1 = normalize(tscan_28a_ag15_check[1], tscan_28a_ag15_check[2])
+plt.errorbar(tscan_28a_ag15_check[0], y1, yerr=yerr1,color='black', label="Ag15")#-Y60C5, 24/04")
+
+
+# plt.title("Y60C5", fontsize=19)
+plt.xlabel("Temperature (K)",fontsize=19)
+plt.ylabel("Signal (normalized) at low field", fontsize=19)#plt.gca().set_yticklabels([])
+plt.axvline(66, linestyle='--', color='grey')
+plt.legend(fontsize=17)#, loc="upper left")
+plt.tick_params(axis="both", which="major", labelsize=15)
+# plt.savefig(save_thesis+"28b ag all")
+plt.savefig(save_thesis+"28a ag all")
+# plt.savefig(save_thesis+"28a ag 5")
+plt.show()
+
+
+#-----------------------------------------------------------------------
+#fig 4.11 == C25Y60C25 == 25A
+
+# data normalized
+
+plt.figure(figsize=(10,7))
+
+colormap = get_cmap("winter")
+colors = colormap(np.linspace(0, 1, 3))
+
+# y1, yerr1 = normalize(tscan_25a_ag0[1], tscan_25a_ag0[2])
+# plt.errorbar(tscan_25a_ag0[0], y1, yerr=yerr1, color=colors[2], label="07/04")#'Ag0-C25Y60C25\nNorm. factor=1/5811')
+
+# Tmax1 = 59.
+# plt.axvline(Tmax1, color='darkgreen', linestyle='--')
+
+
+# x1 = tscan_25a_ag0[0]
+# x_min, x_max = 60., 80.
+# mask = (x1 >= x_min) & (x1 <= x_max) 
+# x = x1[mask]
+# y = y1[mask]
+# index = np.argmin(y)
+# # plt.axvline(x[index], color='darkgreen', linestyle='--')
+# Tmin1 = x[index]
+
+
+y2, yerr2 = normalize(tscan_25a_ag5[1], tscan_25a_ag5[2])
+plt.errorbar(tscan_25a_ag5[0], y2, yerr=yerr2, color=colors[0],label="18/04")#'Ag5-C25Y60C25\nNorm. factor=1/2049')
+
+# y2, yerr2 = normalize(tscan_25a_ag5_check[1], tscan_25a_ag5_check[2])
+# plt.errorbar(tscan_25a_ag5_check[0], y2, yerr=yerr2, color=colors[1], label="28/04")#'25a CeO2/YBCO/CeO2 Ag5 28/04')
+
+y3, yerr3 = normalize(tscan_25a_ag0_check[1], tscan_25a_ag0_check[2])
+plt.errorbar(tscan_25a_ag0_check[0], y3, yerr=yerr3, color='darkgreen', label='Ag0')#-C25Y60C25\nNorm. factor=1/1387')
+
+# y4, yerr4 = normalize(tscan_25a_ag0_2204[1], tscan_25a_ag0_2204[2])
+# plt.errorbar(tscan_25a_ag0_2204[0], y4, yerr=yerr4, color=colors[1], label="22/04")#'25a CeO2/YBCO/CeO2 Ag0 22/04')
+
+# # index = np.argmax(y4)
+# # plt.axvline(tscan_25a_ag0_2204[0][index], color='purple', linestyle='--')
+# Tmax4 = tscan_25a_ag0_2204[0][index]
+
+# x4 = tscan_25a_ag0_2204[0]
+# x_min, x_max = 50., 70.
+# mask = (x4 >= x_min) & (x4 <= x_max) 
+# x = x4[mask]
+# y = y4[mask]
+# index = np.argmin(y)
+# # plt.axvline(x[index], color='purple', linestyle='--')
+# Tmin4 = x[index]
+
+# y5, yerr5 = normalize(tscan_25a_ag0_3004[1], tscan_25a_ag0_3004[2])
+# plt.errorbar(tscan_25a_ag0_3004[0], y5+0.6, yerr=yerr5, color=colors[0], label="30/04")#'25a CeO2/YBCO/CeO2 Ag0 30/04 +0.6')
+
+# y6, yerr6 = normalize(tscan_25a_ag0_3004_inplane[1], tscan_25a_ag0_3004_inplane[2])
+# plt.errorbar(tscan_25a_ag0_3004_inplane[0], y6-0.2, yerr=yerr6, color='grey', label='25a CeO2/YBCO/CeO2 Ag0 30/04 inplane -0.2')
+
+# # print(f'days:{15}')
+# print(f'diff max T={Tmax1-Tmax4} ??')
+# print(f'diff min T={Tmin1-Tmin4}')
+
+
+# plt.axvline(9, linestyle='dashed', color='green')
+# plt.axvline(74, linestyle='dashed', color='green')
+# plt.axvline(7, linestyle='dashed', color='blue')
+# plt.axvline(54, linestyle='dashed', color='blue')
+
+# plt.xlim(50, 80)
+# plt.ylim(0.5,1.1)
+plt.title("C25Y60C25", fontsize=16)
+plt.xlabel("Temperature (K)", fontsize=16)
+plt.ylabel("Normalized Signal at 20G", fontsize=15)
+plt.legend(fontsize=15)
+plt.tick_params(axis="both", which="major", labelsize=13)
+# plt.savefig(save_thesis+"25a ag5 degradation")
+plt.show()
+

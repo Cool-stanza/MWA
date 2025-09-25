@@ -1,0 +1,272 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+from matplotlib.cm import get_cmap
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.ticker import MaxNLocator
+import glob
+import re
+import os
+
+
+data_path = "C:/Users/Costa/UNIVERSITÀ/tesi/mw abs data/ALL DATA/"
+tscan_path = data_path + "Tscan/"
+save_fig = "C:/Users/Costa/UNIVERSITÀ/tesi/mw abs data/riassunto/"
+save_thesis = "C:/Users/Costa/UNIVERSITÀ/tesi/scrittura tesi/pictures/"
+
+
+def normalize(y, yerr):
+    scale = np.max(y) - np.min(y)
+    y_norm = (y - np.min(y)) / scale
+    yerr_norm = yerr / scale
+    print("scale",scale)
+    return y_norm, yerr_norm
+
+def normalize_in_range(x, y, yerr, x_shift=0, x_range=(45, 75)):
+    x_shifted = x + x_shift
+    mask = (x_shifted >= x_range[0]) & (x_shifted <= x_range[1])
+    y_min, y_max = np.min(y[mask]), np.max(y[mask])
+    y_norm = (y - y_min) / (y_max - y_min)
+    yerr_norm = yerr / (y_max - y_min)
+    return x_shifted, y_norm, yerr_norm, y_max-y_min
+
+#-----------------------------------------------------------------------------------------------
+
+# READING FULL SWEEP
+# field == valore campo magnetico 0-9000G
+# int == intensitá del segnale di mwa (giá normalizzato uniformando il gain di tutte le misure)
+# min == valore minimo del segnale mwa (preso a 20-40G)
+# diff == ampiezza del "salto" del segnale a 40G
+
+samples = ['28b', '24a', '27a','19a','21a', '25a','28a', 'LAO']
+silver = ['Ag0', 'Ag15', 'Ag5', 'Ag10']
+file_names = ['field', 'int', 'temp', 'min', 'diff']
+
+data = {}
+
+for sample in samples:
+    for sil in silver:
+        data[sample, sil] = {}
+
+        for file_name in file_names:
+            path = data_path+f"{sample}_{sil}_{file_name}.npy"
+            
+            if glob.glob(path): #check if file exists
+                loaded_data = np.load(path, allow_pickle=True)
+                data[sample, sil][file_name] = loaded_data
+            else:
+                continue
+
+field_28b_ag0 = data['28b','Ag0']['field']
+int_28b_ag0 = data['28b','Ag0']['int']
+temp_28b_ag0 = data['28b','Ag0']['temp']
+min_28b_ag0 = data['28b','Ag0']['min']
+diff_28b_ag0 = data['28b','Ag0']['diff']
+
+field_28b_ag15 = data['28b','Ag15']['field']
+int_28b_ag15 = data['28b','Ag15']['int']
+temp_28b_ag15 = data['28b','Ag15']['temp']
+min_28b_ag15 = data['28b','Ag15']['min']
+diff_28b_ag15 = data['28b','Ag15']['diff']
+
+field_24a_ag0 = data['24a','Ag0']['field']
+int_24a_ag0 = data['24a','Ag0']['int']
+temp_24a_ag0 = data['24a','Ag0']['temp']
+min_24a_ag0 = data['24a','Ag0']['min']
+diff_24a_ag0 = data['24a','Ag0']['diff']
+
+field_24a_ag15 = data['24a','Ag15']['field']
+int_24a_ag15 = data['24a','Ag15']['int']
+temp_24a_ag15 = data['24a','Ag15']['temp']
+min_24a_ag15 = data['24a','Ag15']['min']
+diff_24a_ag15 = data['24a','Ag15']['diff']
+
+field_data2 =  np.load(data_path + "24a_Ag15_tdep_field.npy" , allow_pickle=True)
+int_data2 =  np.load(data_path + "24a_Ag15_tdep_int.npy" , allow_pickle=True)
+temp_data2 =  np.load(data_path + "24a_Ag15_tdep_temp.npy" , allow_pickle=True)
+min_data2 =  np.load(data_path + "24a_Ag15_tdep_min.npy" , allow_pickle=True)
+diff_data2 =  np.load(data_path + "24a_Ag15_tdep_diff.npy" , allow_pickle=True)
+
+field_27a_ag0 = data['27a','Ag0']['field']
+int_27a_ag0 = data['27a','Ag0']['int']
+temp_27a_ag0 = data['27a','Ag0']['temp']
+min_27a_ag0 = data['27a','Ag0']['min']
+diff_27a_ag0 = data['27a','Ag0']['diff']
+
+field_27a_ag15 = data['27a','Ag15']['field']
+int_27a_ag15 = data['27a','Ag15']['int']
+temp_27a_ag15 = data['27a','Ag15']['temp']
+min_27a_ag15 = data['27a','Ag15']['min']
+diff_27a_ag15 = data['27a','Ag15']['diff']
+
+field_19a_ag0 = data['19a','Ag0']['field']
+int_19a_ag0 = data['19a','Ag0']['int']
+temp_19a_ag0 = data['19a','Ag0']['temp']
+min_19a_ag0 = data['19a','Ag0']['min']
+diff_19a_ag0 = data['19a','Ag0']['diff']
+
+field_21a_ag0 = data['21a','Ag0']['field']
+int_21a_ag0 = data['21a','Ag0']['int']
+temp_21a_ag0 = data['21a','Ag0']['temp']
+min_21a_ag0 = data['21a','Ag0']['min']
+diff_21a_ag0 = data['21a','Ag0']['diff']
+
+field_21a_inplane =  np.load(data_path + "21a_Ag0_field_inplane.npy" , allow_pickle=True)
+int_21a_inplane =  np.load(data_path + "21a_Ag0_int_inplane.npy" , allow_pickle=True)
+temp_21a_inplane =  np.load(data_path + "21a_Ag0_temp_inplane.npy" , allow_pickle=True)
+
+field_25a_ag0 = data['25a','Ag0']['field']
+int_25a_ag0 = data['25a','Ag0']['int']
+temp_25a_ag0 = data['25a','Ag0']['temp']
+min_25a_ag0 = data['25a','Ag0']['min']
+diff_25a_ag0 = data['25a','Ag0']['diff']
+
+field_25a_ag0_3004 =  np.load(data_path + "25a_Ag0_field_3004.npy" , allow_pickle=True)
+int_25a_ag0_3004 =  np.load(data_path + "25a_Ag0_int_3004.npy" , allow_pickle=True)
+temp_25a_ag0_3004 =  np.load(data_path + "25a_Ag0_temp_3004.npy" , allow_pickle=True)
+
+field_25a_ag0_2204 =  np.load(data_path + "25a_Ag0_field_2204.npy" , allow_pickle=True)
+int_25a_ag0_2204 =  np.load(data_path + "25a_Ag0_int_2204.npy" , allow_pickle=True)
+temp_25a_ag0_2204 =  np.load(data_path + "25a_Ag0_temp_2204.npy" , allow_pickle=True)
+
+field_25a_ag5 = data['25a','Ag5']['field']
+int_25a_ag5 = data['25a','Ag5']['int']
+temp_25a_ag5 = data['25a','Ag5']['temp']
+
+field_25a_ag10 = data['25a','Ag10']['field']
+int_25a_ag10 = data['25a','Ag10']['int']
+temp_25a_ag10 = data['25a','Ag10']['temp']
+
+field_25a_ag15 = data['25a','Ag15']['field']
+int_25a_ag15 = data['25a','Ag15']['int']
+temp_25a_ag15 = data['25a','Ag15']['temp']
+
+
+
+field_28a_ag0 = data['28a','Ag0']['field']
+int_28a_ag0 = data['28a','Ag0']['int']
+temp_28a_ag0 = data['28a','Ag0']['temp']
+min_28a_ag0 = data['28a','Ag0']['min']
+diff_28a_ag0 = data['28a','Ag0']['diff']
+
+field_lao = data['LAO','Ag0']['field']
+int_lao = data['LAO','Ag0']['int']
+temp_lao = data['LAO','Ag0']['temp']
+min_lao = data['LAO','Ag0']['min']
+diff_lao = data['LAO','Ag0']['diff']
+
+field_25a_ag5_check =  np.load(data_path + "25a_Ag5_field_check.npy" , allow_pickle=True)
+int_25a_ag5_check =  np.load(data_path + "25a_Ag5_int_check.npy" , allow_pickle=True)
+temp_25a_ag5_check =  np.load(data_path + "25a_Ag5_temp_check.npy" , allow_pickle=True)
+
+#------------------------------------------------------------------------------------------------
+
+# READING TSCAN 
+# temp == temperatura in K
+# mean == valore medio del segnale ad una data temp e campo magnetico fissato a 20G
+# err == errore (ymax-ymin)
+# tutti gli altri indici indicano quasi tutti la data, "in" sta per in-plane per il campo magnetico
+
+samples = ['28b', '24a', '27a','25a','28a','26a','19a']
+silver = ['Ag0', 'Ag15', 'Ag5', 'Ag10']
+file_names = ['temp', 'mean', 'err', 'temp2', 'mean2', 'err2', 'temp_0', 'mean_0', 'err_0',
+              'temp_check', 'mean_check', 'err_check','temp_check_in', 'mean_check_in', 'err_check_in', 
+              'temp_2204', 'mean_2204', 'err_2204', 'temp_2204_0', 'mean_2204_0', 'err_2204_0', 'temp_0f', 'mean_0f', 'err_0f', 
+              'temp_2204_1k', 'mean_2204_1k', 'err_2204_1k', 'temp_2204_5deg', 'mean_2204_5deg', 'err_2204_5deg', 'temp_2204_5deg_0', 'mean_2204_5deg_0', 'err_2204_5deg_0',
+               'temp_2904', 'mean_2904', 'err_2904', 'temp_2904_in', 'mean_2904_in', 'err_2904_in',
+                'temp_3004', 'mean_3004', 'err_3004', 'temp_3004_in', 'mean_3004_in', 'err_3004_in']
+
+data_tscan = {}
+
+for sample in samples:
+    for sil in silver:
+        data_tscan[sample, sil] = {}
+
+        for file_name in file_names:
+            path = tscan_path+f"{sample}_{sil}_tscan_{file_name}.npy"
+            # print(path)
+            if glob.glob(path): #check if file exists
+                loaded_data = np.load(path, allow_pickle=True)
+                data_tscan[sample, sil][file_name] = loaded_data
+                if sample=='19a':
+                    print(sample, sil, file_name)
+            else:
+                continue
+
+tscan_24a_ag15 = [data_tscan['24a','Ag15']['temp'], data_tscan['24a','Ag15']['mean'], data_tscan['24a','Ag15']['err']]
+
+# 27a concatenated -------------------------------------------------------------------------------------------------
+tscan_27a_ag0 = [data_tscan['27a','Ag0']['temp'], data_tscan['27a','Ag0']['mean'], data_tscan['27a','Ag0']['err']]
+tscan_27a_ag0_2 = [data_tscan['27a','Ag0']['temp2'], data_tscan['27a','Ag0']['mean2'], data_tscan['27a','Ag0']['err2']]
+x1 = tscan_27a_ag0[0][1:110]
+x2 = tscan_27a_ag0[0][117:]
+x3 = tscan_27a_ag0_2[0][4:-1]
+y1 = tscan_27a_ag0[1][1:110]
+y2 = tscan_27a_ag0[1][117:]
+y3 = tscan_27a_ag0_2[1][4:-1]
+yerr1 = tscan_27a_ag0[2][1:110]
+yerr2 = tscan_27a_ag0[2][117:]
+yerr3 = tscan_27a_ag0_2[2][4:-1]
+
+x_all = np.concatenate((x1, x2, x3))
+y_all = np.concatenate((y1, y2, y3))
+yerr_all = np.concatenate((yerr1, yerr2, yerr3))
+
+sorted_indices = np.argsort(x_all)
+x_sorted = x_all[sorted_indices]
+y_sorted = y_all[sorted_indices]
+yerr_sorted = yerr_all[sorted_indices]
+#--------------------------------------------------------------------------------------------------------------------
+tscan_27a_ag0 = [x_sorted, y_sorted, yerr_sorted]
+tscan_27a_ag15 = [data_tscan['27a','Ag15']['temp'], data_tscan['27a','Ag15']['mean'], data_tscan['27a','Ag15']['err']]
+tscan_25a_ag0 = [data_tscan['25a','Ag0']['temp'], data_tscan['25a','Ag0']['mean'], data_tscan['25a','Ag0']['err']]
+tscan_28a_ag0 = [data_tscan['28a','Ag0']['temp'], data_tscan['28a','Ag0']['mean'], data_tscan['28a','Ag0']['err']]
+tscan_28a_ag15 = [data_tscan['28a','Ag15']['temp'], data_tscan['28a','Ag15']['mean'], data_tscan['28a','Ag15']['err']]
+tscan_28b_ag0 = [data_tscan['28b','Ag0']['temp'], data_tscan['28b','Ag0']['mean'], data_tscan['28b','Ag0']['err']]
+tscan_28b_ag15 = [data_tscan['28b','Ag15']['temp'], data_tscan['28b','Ag15']['mean'], data_tscan['28b','Ag15']['err']]
+tscan_26a_ag0 = [data_tscan['26a','Ag0']['temp'], data_tscan['26a','Ag0']['mean'], data_tscan['26a','Ag0']['err']]
+tscan_26a_ag15 = [data_tscan['26a','Ag15']['temp'], data_tscan['26a','Ag15']['mean'], data_tscan['26a','Ag15']['err']]
+tscan_27a_ag0_cool0field = [data_tscan['27a','Ag0']['temp_0'], data_tscan['27a','Ag0']['mean_0'], data_tscan['27a','Ag0']['err_0']]
+tscan_27a_ag5 = [data_tscan['27a','Ag5']['temp'], data_tscan['27a','Ag5']['mean'], data_tscan['27a','Ag5']['err']]
+tscan_27a_ag10 = [data_tscan['27a','Ag10']['temp'], data_tscan['27a','Ag10']['mean'], data_tscan['27a','Ag10']['err']]
+tscan_28b_ag10 = [data_tscan['28b','Ag10']['temp'], data_tscan['28b','Ag10']['mean'], data_tscan['28b','Ag10']['err']]
+tscan_28b_ag5 = [data_tscan['28b','Ag5']['temp'], data_tscan['28b','Ag5']['mean'], data_tscan['28b','Ag5']['err']]
+
+tscan_28b_ag15_check = [data_tscan['28b','Ag15']['temp_check'], data_tscan['28b','Ag15']['mean_check'], data_tscan['28b','Ag15']['err_check']]
+tscan_28b_ag15_inplane = [data_tscan['28b','Ag15']['temp_check_in'], data_tscan['28b','Ag15']['mean_check_in'], data_tscan['28b','Ag15']['err_check_in']]
+
+tscan_25a_ag5 = [data_tscan['25a','Ag5']['temp'], data_tscan['25a','Ag5']['mean'], data_tscan['25a','Ag5']['err']]
+tscan_25a_ag0_check = [data_tscan['25a','Ag0']['temp_check'], data_tscan['25a','Ag0']['mean_check'], data_tscan['25a','Ag0']['err_check']]
+tscan_25a_ag0_2204 = [data_tscan['25a','Ag0']['temp_2204'], data_tscan['25a','Ag0']['mean_2204'], data_tscan['25a','Ag0']['err_2204']]
+tscan_25a_ag0_2204_0 = [data_tscan['25a','Ag0']['temp_2204_0'], data_tscan['25a','Ag0']['mean_2204_0'], data_tscan['25a','Ag0']['err_2204_0']]
+tscan_25a_ag0_2204_1k = [data_tscan['25a','Ag0']['temp_2204_1k'], data_tscan['25a','Ag0']['mean_2204_1k'], data_tscan['25a','Ag0']['err_2204_1k']]
+tscan_25a_ag0_2204_5deg = [data_tscan['25a','Ag0']['temp_2204_5deg'], data_tscan['25a','Ag0']['mean_2204_5deg'], data_tscan['25a','Ag0']['err_2204_5deg']]
+tscan_25a_ag0_2204_5deg_0 = [data_tscan['25a','Ag0']['temp_2204_5deg_0'], data_tscan['25a','Ag0']['mean_2204_5deg_0'], data_tscan['25a','Ag0']['err_2204_5deg_0']]
+
+tscan_28a_ag5 = [data_tscan['28a','Ag5']['temp'], data_tscan['28a','Ag5']['mean'], data_tscan['28a','Ag5']['err']]
+tscan_28a_ag10 = [data_tscan['28a','Ag10']['temp'], data_tscan['28a','Ag10']['mean'], data_tscan['28a','Ag10']['err']]
+
+tscan_28a_ag15_check = [data_tscan['28a','Ag15']['temp_check'], data_tscan['28a','Ag15']['mean_check'], data_tscan['28a','Ag15']['err_check']]
+
+tscan_27a_ag0_check = [data_tscan['27a','Ag0']['temp_check'], data_tscan['27a','Ag0']['mean_check'], data_tscan['27a','Ag0']['err_check']]
+tscan_27a_ag0_0field = [data_tscan['27a','Ag0']['temp_0f'], data_tscan['27a','Ag0']['mean_0f'], data_tscan['27a','Ag0']['err_0f']]
+
+
+tscan_26a_ag5 = [data_tscan['26a','Ag5']['temp'], data_tscan['26a','Ag5']['mean'], data_tscan['26a','Ag5']['err']]
+tscan_26a_ag10 = [data_tscan['26a','Ag10']['temp'], data_tscan['26a','Ag10']['mean'], data_tscan['26a','Ag10']['err']]
+
+tscan_24a_ag10 = [data_tscan['24a','Ag10']['temp'], data_tscan['24a','Ag10']['mean'], data_tscan['24a','Ag10']['err']]
+tscan_24a_ag5 = [data_tscan['24a','Ag5']['temp'], data_tscan['24a','Ag5']['mean'], data_tscan['24a','Ag5']['err']]
+
+tscan_25a_ag5_check = [data_tscan['25a','Ag5']['temp_check'], data_tscan['25a','Ag5']['mean_check'], data_tscan['25a','Ag5']['err_check']]
+
+tscan_28b_ag15_2904 = [data_tscan['28b','Ag15']['temp_2904'], data_tscan['28b','Ag15']['mean_2904'], data_tscan['28b','Ag15']['err_2904']]
+tscan_28b_ag15_2904_in = [data_tscan['28b','Ag15']['temp_2904_in'], data_tscan['28b','Ag15']['mean_2904_in'], data_tscan['28b','Ag15']['err_2904_in']]
+
+tscan_24a_ag0 = [data_tscan['24a','Ag0']['temp'], data_tscan['24a','Ag0']['mean'], data_tscan['24a','Ag0']['err']]
+
+tscan_25a_ag0_3004 = [data_tscan['25a','Ag0']['temp_3004'], data_tscan['25a','Ag0']['mean_3004'], data_tscan['25a','Ag0']['err_3004']]
+tscan_25a_ag0_3004_inplane = [data_tscan['25a','Ag0']['temp_3004_in'], data_tscan['25a','Ag0']['mean_3004_in'], data_tscan['25a','Ag0']['err_3004_in']]
+
+tscan_19a_ag0 = [data_tscan['19a','Ag0']['temp'], data_tscan['19a','Ag0']['mean'], data_tscan['19a','Ag0']['err']]
+
